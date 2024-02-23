@@ -4,21 +4,21 @@ pragma solidity ^0.8.20;
 contract Vault {
     address public user;
     uint public unlockTime;
-    address public beneficiary;
+    address public heir;
     uint public amount;
 
 
-    constructor(address _beneficiary, uint _unlockTime) payable {
+    constructor(address _heir, uint _unlockTime) payable {
         user = msg.sender;
-        beneficiary = _beneficiary;
+        heir = _heir;
         unlockTime = _unlockTime;
         amount = msg.value;
     }
 
     function claim() public  {
-        require(msg.sender == beneficiary, "Only the beneficiary can claim the funds");
+        require(msg.sender == heir, "Only heir can claim this");
         require(block.timestamp >= unlockTime, "Funds are not yet available to claim");
-        payable(beneficiary).transfer(address(this).balance);
+        payable(heir).transfer(address(this).balance);
     }
 
     function deposit() public payable {
@@ -26,9 +26,9 @@ contract Vault {
         amount = amount + msg.value;
     } 
 
-    function changeBeneficiary(address _newBeneficiary) public {
-        require(msg.sender == user, "Only the owner can change the beneficiary");
-        beneficiary = _newBeneficiary;
+    function changeBeneficiary(address _newheir) public {
+        require(msg.sender == user, "Only the owner can change the heir");
+        heir = _newheir;
     }
 
     function changeUnlockTime(uint _newUnlockTime) public {
